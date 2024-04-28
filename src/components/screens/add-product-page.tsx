@@ -26,6 +26,7 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/routesParams';
 import {NavigatorRoutes} from '../../navigation/routes';
+import MaskInput, {Masks} from 'react-native-mask-input';
 
 const schema = yup
   .object({
@@ -167,7 +168,8 @@ const AddProduct = ({route}: AddProductProps) => {
             required: true,
           }}
           render={({field: {onChange, onBlur, value}}) => (
-            <TextInput
+            <MaskInput
+              mask={Masks.BRL_CURRENCY}
               keyboardType="numeric"
               placeholder="Valor"
               onBlur={onBlur}
@@ -189,7 +191,9 @@ const AddProduct = ({route}: AddProductProps) => {
             required: true,
           }}
           render={({field: {onChange, onBlur, value}}) => (
-            <TextInput
+            <MaskInput
+              keyboardType="number-pad"
+              mask={Masks.DATE_MMDDYYYY}
               placeholder="Data de venda"
               onBlur={onBlur}
               onChangeText={onChange}
