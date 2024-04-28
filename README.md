@@ -30,8 +30,8 @@ react-redux v9.1.1 <br />
 yup: v1.4.0 <br /> 
 
 ### Prerequisites
-Android Studio Iguana || xcode 15
-Node.js v20.12.2
+Android Studio Iguana || xcode 15 <br /> 
+Node.js v20.12.2  <br /> 
 
 
 ### Setting up Dev
