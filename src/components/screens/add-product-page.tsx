@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {
   View,
@@ -14,31 +14,99 @@ import {
   launchImageLibrary,
   ImagePickerResponse,
 } from 'react-native-image-picker';
+import * as yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {useAppDispatch, useAppSelector} from '../../store';
+import {
+  editProduct,
+  getProductById,
+  getProducts,
+  saveProduct,
+} from '../../store/actions/products.actions';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/routesParams';
+import {NavigatorRoutes} from '../../navigation/routes';
+
+const schema = yup
+  .object({
+    name: yup.string().required(),
+    value: yup.string().required(),
+    sellDate: yup.string().required(),
+    image: yup.string().required(),
+  })
+  .required();
 
 type FormData = {
   name: string;
   value: string;
   sellDate: string;
-  image: string | null;
+  image: string;
 };
 
-const AddProduct = () => {
+type AddProductProps = NativeStackScreenProps<
+  RootStackParamList,
+  NavigatorRoutes.ADD_PRODUCT
+>;
+
+const AddProduct = ({route}: AddProductProps) => {
+  const {itemId} = route.params || '';
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const {width} = useWindowDimensions();
+  const {edit_product_pending, product_edit} = useAppSelector(
+    state => state.products,
+  );
   const [image, setImage] = useState<string | null | undefined>(null);
   const buttonWidth = width - 32;
-  console.log(image);
   const {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: itemId ? product_edit?.name : '',
+      value: itemId ? product_edit?.price : '',
+      sellDate: itemId ? product_edit?.sale_date : '',
+      image: itemId ? product_edit?.image.file : '',
+    },
+  });
+
+  useEffect(() => {
+    if (itemId) {
+      setImage(product_edit?.image.file);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const goBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: any) => {
+    const productData = {
+      name: data.name,
+      image: data.image,
+      price: data.value,
+      sale_date: data.sellDate,
+    };
+    console.log({data});
+    if (itemId) {
+      dispatch(
+        editProduct(productData, () => {
+          dispatch(getProducts());
+          navigation.navigate(NavigatorRoutes.HOME);
+        }),
+      );
+    } else {
+      dispatch(
+        saveProduct(productData, () => {
+          dispatch(getProducts());
+          navigation.navigate(NavigatorRoutes.HOME);
+        }),
+      );
+    }
+  };
 
   const openImagePicker = () => {
     launchImageLibrary(
@@ -79,6 +147,7 @@ const AddProduct = () => {
           }}
           render={({field: {onChange, onBlur, value}}) => (
             <TextInput
+              maxLength={40}
               placeholder="Nome do produto"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -99,6 +168,7 @@ const AddProduct = () => {
           }}
           render={({field: {onChange, onBlur, value}}) => (
             <TextInput
+              keyboardType="numeric"
               placeholder="Valor"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -154,12 +224,27 @@ const AddProduct = () => {
             </TouchableOpacity>
           </View>
         </View>
+        <View style={styles.defaultImageBox}>
+          {image !== '' ? (
+            <Image
+              source={{uri: `data:image/jpeg;base64,${image}`}}
+              style={styles.image64}
+            />
+          ) : (
+            <Image
+              source={require('../../assets/default-image.png')}
+              style={styles.defaultImage}
+            />
+          )}
+        </View>
       </View>
       <View style={styles.spacing} />
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
         style={{...styles.addProduct, width: buttonWidth}}>
-        <Text style={styles.buttonText}>Adicionar Produto</Text>
+        <Text style={styles.buttonText}>
+          {itemId ? 'Editar Produto' : 'Adicionar Produto'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -271,6 +356,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
     fontWeight: '700',
+  },
+  defaultImageBox: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomEndRadius: 6,
+    borderBottomStartRadius: 6,
+  },
+  defaultImage: {
+    height: 128,
+    width: 176,
+  },
+  image64: {
+    height: 335,
+    width: '100%',
   },
 });
 

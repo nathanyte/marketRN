@@ -7,10 +7,14 @@ import {
 const INITIAL_STATE: ProductsState = {
   products: null,
   products_get_pending: false,
+  products_get_id_pending: false,
 
   save_product_pending: false,
   delete_product_pending: false,
   edit_product_pending: false,
+
+  product_edit: null,
+  product_edit_pending: false,
 };
 
 const ProductsReducer = (
@@ -33,6 +37,22 @@ const ProductsReducer = (
       return {
         ...state,
         products_get_pending: false,
+      };
+    case ProductsActionsTypes.GET_PRODUCT_BY_ID:
+      return {
+        ...state,
+        products_get_id_pending: true,
+      };
+    case ProductsActionsTypes.GET_PRODUCT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        product_edit: action.payload,
+        products_get_id_pending: false,
+      };
+    case ProductsActionsTypes.GET_PRODUCT_BY_ID_FAILURE:
+      return {
+        ...state,
+        products_get_id_pending: false,
       };
     case ProductsActionsTypes.SAVE_PRODUCT:
       return {

@@ -3,6 +3,10 @@ export enum ProductsActionsTypes {
   GET_PRODUCTS_SUCCESS = 'GET_PRODUCTS_SUCCESS',
   GET_PRODUCTS_FAILURE = 'GET_PRODUCTS_FAILURE',
 
+  GET_PRODUCT_BY_ID = 'GET_PRODUCT_BY_ID',
+  GET_PRODUCT_BY_ID_SUCCESS = 'GET_PRODUCT_BY_ID_SUCCESS',
+  GET_PRODUCT_BY_ID_FAILURE = 'GET_PRODUCT_BY_ID_FAILURE',
+
   SAVE_PRODUCT = 'SAVE_PRODUCT',
   SAVE_PRODUCT_SUCCESS = 'SAVE_PRODUCT_SUCCESS',
   SAVE_PRODUCT_FAILURE = 'SAVE_PRODUCT_FAILURE',
@@ -29,7 +33,10 @@ export type ProductType = {
 
 export type SaveProductType = {
   name: string;
-  image: string;
+  image: {
+    extension: string;
+    file: string;
+  };
   price: string;
   sale_date: string;
   idCandidato: string;
@@ -38,7 +45,10 @@ export type SaveProductType = {
 export type EditProductType = {
   id: string;
   name: string;
-  image: string;
+  image: {
+    extension: string;
+    file: string;
+  };
   price: string;
   sale_date: string;
   idCandidato: string;
@@ -47,10 +57,14 @@ export type EditProductType = {
 export type ProductsState = {
   products: ProductType[] | null;
   products_get_pending: boolean;
+  products_get_id_pending: boolean;
 
   save_product_pending: boolean;
   delete_product_pending: boolean;
   edit_product_pending: boolean;
+
+  product_edit: ProductType | null;
+  product_edit_pending: boolean;
 };
 
 type GetProductsAction = {
@@ -65,6 +79,21 @@ type GetProductsSuccessAction = {
 
 type GetProductsFailureAction = {
   type: ProductsActionsTypes.GET_PRODUCTS_FAILURE;
+  payload: never;
+};
+
+type GetProductByIdAction = {
+  type: ProductsActionsTypes.GET_PRODUCT_BY_ID;
+  payload: never;
+};
+
+type GetProductByIdSuccessAction = {
+  type: ProductsActionsTypes.GET_PRODUCT_BY_ID_SUCCESS;
+  payload: ProductType;
+};
+
+type GetProductByIdFailureAction = {
+  type: ProductsActionsTypes.GET_PRODUCT_BY_ID_FAILURE;
   payload: never;
 };
 
@@ -124,4 +153,7 @@ export type ProductsPayloadTypes =
   | DeleteProductFailureAction
   | EditProductAction
   | EditProductSuccessAction
-  | EditProductFailureAction;
+  | EditProductFailureAction
+  | GetProductByIdAction
+  | GetProductByIdSuccessAction
+  | GetProductByIdFailureAction;

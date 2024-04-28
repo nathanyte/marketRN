@@ -16,6 +16,7 @@ interface ProductCardProps {
   marginLeft?: number;
   pending: boolean;
   onPress: () => void;
+  deletePress: () => void;
 }
 
 const ProductCard = ({
@@ -26,6 +27,7 @@ const ProductCard = ({
   marginLeft,
   pending,
   onPress,
+  deletePress,
 }: ProductCardProps) => {
   const {width} = useWindowDimensions();
   const cardWidth = (width - 48) / 2;
@@ -34,12 +36,14 @@ const ProductCard = ({
       disabled={pending}
       onPress={onPress}
       style={{...styles.productBox, width: cardWidth, marginLeft}}>
-      <TouchableOpacity style={styles.trashIcon} onPress={() => {}}>
-        <Image
-          source={require('../../assets/trash.png')}
-          style={styles.trashImage}
-        />
-      </TouchableOpacity>
+      {!pending && (
+        <TouchableOpacity style={styles.trashIcon} onPress={deletePress}>
+          <Image
+            source={require('../../assets/trash.png')}
+            style={styles.trashImage}
+          />
+        </TouchableOpacity>
+      )}
       {pending ? (
         <>
           <View style={styles.imageSkeleton} />
