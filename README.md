@@ -18,16 +18,16 @@ yarn install && cd ios && pod install
 ## Developing
 
 ### Built With
-React Native v0.74
-react-hook-form v7.51.3
-react-native v0.74.0
-react-native-image-picker v7.1.2
-react-native-mask-input v1.2.3
-react-native-safe-area-context v4.10.1
-react-native-screens v3.31.1
-react-native-splash-screen v3.3.0
-react-redux v9.1.1
-yup: v1.4.0
+React Native v0.74 <br /> 
+react-hook-form v7.51.3 <br /> 
+react-native v0.74.0 <br /> 
+react-native-image-picker v7.1.2 <br /> 
+react-native-mask-input v1.2.3 <br /> 
+react-native-safe-area-context v4.10.1 <br /> 
+react-native-screens v3.31.1 <br /> 
+react-native-splash-screen v3.3.0 <br /> 
+react-redux v9.1.1 <br /> 
+yup: v1.4.0 <br /> 
 
 ### Prerequisites
 Android Studio Iguana || xcode 15
