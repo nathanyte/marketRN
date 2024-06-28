@@ -11,7 +11,7 @@ A quick introduction of the minimal setup you need to get a hello world up &
 running.
 
 ```shell
-yarn install && cd ios && pod install
+yarn && cd ios && pod install
 ```
 
 
